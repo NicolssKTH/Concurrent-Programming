@@ -1,0 +1,27 @@
+****Uppg 1****
+calculate sum, min and max of the elements in a matrix using pthreads.
+compile by using gcc matrixSum.c -o Matrix (-DDEBUG for testing)
+run by using ./matrix.exe [size] [numworkers]
+
+Evaluation:
+Using a cpu with 2 cores and 4 threads @2,4 GHz on a 10000x10000 matrix.
+A)
+1 thread = 0.537442s, 2 threads = 0.338477s, 4 threads = 0.274796s
+
+B)
+1 thread = 0.402623s, 2 threads = 0.248633s, 4 threads = 0.211662s
+
+C)
+1 thread = 0.394422s, 2 threads = 0.252166s, 4 threads = 0.22193s
+
+
+
+****Uppg 3****
+compute approximation of pi using pthreads.
+compile by using gcc pi.c -o pi
+run by using ./pi.exe [intervals] [numworkers]
+
+Evaluation:
+Using a cpu with 2 cores and 4 threads @2,4 GHz on 1.000.000.000 intervals.
+
+1 thread = 8.63977s, 2 threads = 5.50326s, 4 threads = 3.97146s
