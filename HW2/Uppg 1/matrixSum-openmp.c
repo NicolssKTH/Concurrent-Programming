@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
   }
 
 
-// implicit barrier xd
+// implicit barrier
 
   end_time = omp_get_wtime();
   printf("%d\n", omp_get_thread_num());

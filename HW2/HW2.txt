@@ -1,0 +1,45 @@
+calculate sum, min and max of the elements in a matrix using openmp.
+compile by using gcc matrixSum-openmp.c -o MatrixOmp -fopenmp (-DDEBUG for testing)
+run by using $ ./MatrixOmp.exe [size] [numworkers]
+
+Evaluation:
+Using a cpu with 2 cores and 4 threads @2,4 GHz on a x matrix.
+
+10000x10000
+0,45954 1 thread
+0,24912 2 threads 1,84465 speedup
+0,22531 4 threads 2,0395 speedup
+
+5000x5000
+0,105542 1 thread
+0,066318 2 threads 1,59145 speedup
+0,056427 4 threads 1,87041 speedup
+
+1000x1000
+0,005633 1 thread
+0,004256 2 threads 1,32354 speedup
+0,003121 4 threads 1,80487 speedup
+
+
+**********************************************************************
+compute approximation of pi using openmp.
+compile by using gcc pi.c -o pi -fopenmp 
+run by using ./pi.exe [intervals] [numworkers]
+
+Evaluation:
+Using a cpu with 2 cores and 4 threads @2,4 GHz on x intervals.
+
+1000000000 iteratrions
+7,06431s 1 thread
+4,14833s 2 threads 1,70292 speedup
+3,28652s 4 threads 2,14948 speedup
+
+500000000 iterations
+3,45872s 1 thread
+2,02763s 2 threads 1,70579 speedup
+1,66122s 4 threads 2,08203 speedup
+
+100000000 iterations
+0,69648s 1 thread
+0,40810s 2 threads 1,70661 speedup
+0,33836s 4 threads 2,05834 speedup
