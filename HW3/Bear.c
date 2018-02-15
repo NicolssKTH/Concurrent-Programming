@@ -14,7 +14,6 @@
 
 sem_t potEmpty, potFull, criticalSec;
 
-pthread_mutex_t lock;   /* Lock for  */
 int numBees;          /* number of workers */
 int pot;
 
@@ -57,8 +56,6 @@ int main(int argc, char *argv[])
 	pthread_attr_init(&attr);
 	pthread_attr_setscope(&attr, PTHREAD_SCOPE_SYSTEM);
 
-	/* initialize mutex and condition variable */
-	pthread_mutex_init(&lock, NULL);
 
 	/* read command line args if any */
 	size = (argc > 1) ? atoi(argv[1]) : POTSIZE;
