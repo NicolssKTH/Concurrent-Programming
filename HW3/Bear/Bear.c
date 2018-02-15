@@ -16,23 +16,6 @@ sem_t potEmpty, potFull, criticalSec;
 
 int numBees;          /* number of workers */
 int pot;
-
-/* timer */
-double read_timer()
-{
-	static bool initialized = false;
-	static struct timeval start;
-	struct timeval end;
-	if (!initialized)
-	{
-		gettimeofday(&start, NULL);
-		initialized = true;
-	}
-	gettimeofday(&end, NULL);
-	return (end.tv_sec - start.tv_sec) + 1.0e-6 * (end.tv_usec - start.tv_usec);
-}
-
-double start_time, end_time;  /* start and end times */
 int size;          /* assume size is multiple of numWorkers */
 
 
@@ -66,7 +49,6 @@ int main(int argc, char *argv[])
 	numBees = MAXBEES;
 
 	/* do the parallel work: create the workers */
-	start_time = read_timer();
 	for (l = 0; l < numBees; l++) {
 		pthread_create(&workerid[l], &attr, Bee, (void *)l);
 	}
@@ -74,12 +56,6 @@ int main(int argc, char *argv[])
 	for (l = 0; l < numBees; l++) {
 		pthread_join(workerid[l], NULL);
 	}
-	//get end time
-	end_time = read_timer();
-
-	// print result
-	/* print results */
-	printf("The execution time is %g sec\n", end_time - start_time);
 
 	pthread_exit(NULL);
 }
