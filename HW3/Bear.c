@@ -8,11 +8,15 @@
 #include <time.h>
 #include <sys/time.h>
 #include <limits.h>
-#define MAXWORKERS 10 /* maximum number of workers */
+#include <semaphore.h>
+#define MAXBEES 10 /* maximum number of workers */
+#define POTSIZE 50 /* maximum number of honey */
+
+sem_t potEmpty, potFull, criticalSec;
 
 pthread_mutex_t lock;   /* Lock for  */
-int numbees;          /* number of workers */
-
+int numBees;          /* number of workers */
+int pot;
 
 /* timer */
 double read_timer()
@@ -30,16 +34,23 @@ double read_timer()
 }
 
 double start_time, end_time;  /* start and end times */
+int size;          /* assume size is multiple of numWorkers */
 
 
-void *Worker(void *);
+void *Bee(void *);
+void *Bear(void *);
 
 /* read command line, initialize, and create threads */
 int main(int argc, char *argv[])
 {
+	pot = 0;
 	long l; /* use long in case of a 64-bit system */
 	pthread_attr_t attr;
-	pthread_t workerid[MAXWORKERS];
+	pthread_t workerid[MAXBEES+1];
+
+	sem_init(&potFull, 0, 0);
+	sem_init(&potEmpty, 0, 0);
+	sem_init(&criticalSec, 0, 1);
 
 
 	/* set global thread attributes */
@@ -50,19 +61,20 @@ int main(int argc, char *argv[])
 	pthread_mutex_init(&lock, NULL);
 
 	/* read command line args if any */
-	size = (argc > 1) ? atoi(argv[1]) : MAXSIZE;
-	numWorkers = (argc > 2) ? atoi(argv[2]) : MAXWORKERS;
-	if (size > MAXSIZE)
-	size = MAXSIZE;
-	if (numWorkers > MAXWORKERS)
-	numWorkers = MAXWORKERS;
+	size = (argc > 1) ? atoi(argv[1]) : POTSIZE;
+	numBees = (argc > 2) ? atoi(argv[2]) : MAXBEES;
+	if (size > POTSIZE)
+	size = POTSIZE;
+	if (numBees > MAXBEES)
+	numBees = MAXBEES;
 
 	/* do the parallel work: create the workers */
 	start_time = read_timer();
-	for (l = 0; l < numWorkers; l++) {
-		pthread_create(&workerid[l], &attr, Worker, (void *)l);
+	for (l = 0; l < numBees; l++) {
+		pthread_create(&workerid[l], &attr, Bee, (void *)l);
 	}
-	for (l = 0; l < numWorkers; l++) {
+	pthread_create(&workerid[numBees], &attr, Bear, NULL);
+	for (l = 0; l < numBees; l++) {
 		pthread_join(workerid[l], NULL);
 	}
 	//get end time
@@ -77,19 +89,32 @@ int main(int argc, char *argv[])
 
 /* Each worker sums the values in one strip of the matrix.
 After a barrier, worker(0) computes and prints the total */
-void *Worker(void *arg)
-{
+void *Bee(void *arg){
 	long myid = (long)arg;
 
-	#ifdef DEBUG
-	printf("worker %ld (pthread id %ld) has started\n", myid, (long)pthread_self());
-	#endif
+	while (true) {
+		sleep(1);
+		sem_wait(&criticalSec);
+		pot++;
+		printf("Bee %ld added honey, current pot is %d\n", myid, pot);
+		if (pot >= size) {
+			sem_post(&potFull);
+			printf("Bee %ld filled the pot and woke the bear\n", myid);
+			sem_wait(&potEmpty);
+		}
+		sem_post(&criticalSec);
+	}
 
-
-
-	#ifdef DEBUG
-	printf("worker %ld (pthread id %ld) has finished\n", myid, (long)pthread_self());
-	#endif
 
 	pthread_exit(NULL);
+}
+
+void *Bear(void *arg) {
+	while (true) {
+		sem_wait(&potFull);
+		pot = 0;
+		printf("Bear ate all honey, current pot is %d\n", pot);
+		sem_post(&potEmpty);
+	}
+pthread_exit(NULL);
 }
