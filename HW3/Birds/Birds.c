@@ -71,7 +71,6 @@ void *Bird(void *arg){
 		sem_post(&criticalSec);
 	}
 
-
 	pthread_exit(NULL);
 }
 
