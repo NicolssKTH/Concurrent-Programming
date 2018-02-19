@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
         }
       }
       if (matrix[i][j] > localMax.value) {
-        #pragma omp critical(updateMin)
+        #pragma omp critical(updateMax)
         {
           if (matrix[i][j] > localMax.value) {
             localMax.value = matrix[i][j];
@@ -100,7 +100,6 @@ int main(int argc, char *argv[]) {
 // implicit barrier
 
   end_time = omp_get_wtime();
-  printf("%d\n", omp_get_thread_num());
   printf("the total is %d\nMax = %d (%ld, %ld)\nMin = %d (%ld, %ld)\n", total, localMax.value, localMax.j, localMax.i, localMin.value, localMin.j, localMin.i);
   printf("it took %g seconds\n", end_time - start_time);
 

@@ -1,0 +1,9 @@
+The  hungry birds problem using semaphores and pthreads.
+compile by using gcc Bird.c -o Bird -pthread
+run by using $ ./Bird.exe [numworkers]
+
+*****************************************************'
+
+The bear and honeybees problem using semaphores and pthreads.
+compile by using gcc Bear.c -o Bear -pthread
+run by using $ ./Bear.exe [POTSIZE][numworkers]
